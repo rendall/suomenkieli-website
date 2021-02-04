@@ -1,0 +1,254 @@
+﻿@model List<SuomenkieliWebsite.Controllers.DrillRow>
+@{
+    var testTopic = Model.First().Relationship;
+    var title = String.Format("Self Test: {0}", testTopic);
+
+    System.Globalization.TextInfo textInfo = new System.Globalization.CultureInfo("en-US", false).TextInfo;
+    title = textInfo.ToTitleCase(title);
+
+    var exampleBase = Model.First().BaseWord;
+    var exampleRelated = Model.First().RelatedWord;
+
+    ViewBag.Title = title;
+
+}
+
+<style type="text/css">
+    .drDefinition, .drRelationship {
+        display: none;
+    }
+
+    .drDefinition {
+        font-weight: normal;
+    }
+
+    .drillButtons {
+        text-align: center;
+        padding: 1em;
+    }
+
+    p.drAnswer {
+        display: none;
+    }
+
+    p.drGuess {
+        color: grey;
+    }
+
+    #tryAgain {
+        display: none;
+    }
+
+    table#drillTable tr td {
+        padding: 1em;
+    }
+
+    table#drillTable input {
+        width: 100%;
+    }
+
+    input {
+        padding-left: 0.5em;
+    }
+
+    td.drStatus .glyphicon {
+        display: none;
+        font-size: 2em;
+        text-align: right;
+    }
+
+    td.drBaseWord {
+        width: 10%;
+        font-weight: bold;
+        cursor: default;
+    }
+
+
+    tr.true td {
+        background-color: palegreen;
+    }
+
+    tr.false td {
+        background-color: lightcoral;
+    }
+
+        tr.false td p.drAnswer {
+            display: block;
+            margin-top: 1em;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: darkred;
+        }
+
+    tr.false p.drGuess {
+        display: block;
+        text-decoration: line-through;
+        cursor: default;
+    }
+
+        tr.false p.drGuess:hover {
+            display: block;
+            text-decoration: none;
+            color: black;
+        }
+
+    tr.true input, tr.false input {
+        display: none;
+    }
+
+    tr.true td p.drAnswer {
+        display: none;
+    }
+
+
+    tr.true td.drStatus .glyphicon-ok {
+        color: springgreen;
+        display: block;
+    }
+
+    tr.false td.drStatus .glyphicon-remove {
+        color: red;
+        display: block;
+    }
+
+    h2 {
+        text-transform: capitalize;
+    }
+</style>
+
+<h2>@ViewBag.Title</h2>
+<p>Enter the <span class="drTestTopic">@testTopic</span> of each word in the input field.  When you're done, press the 'check my answers' button, below.</p>
+<p>Example: <span class="drExampleWord">@exampleBase</span> <input class="drExampleInput disabled" value="@exampleRelated"></input></p>
+<p><input type="checkbox" name="chk_asYouGo" id="chk_asYouGo" /><label for="chk_asYouGo"> Check this box to reveal answers one at a time as you go.</label></p>
+<table id="drillTable" class="table-striped">
+
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        var dr = Model[i]; // for 'drill row'
+        var statusID = String.Format("status{0}", i);
+        <tr data-answer="@dr.RelatedWord">
+            <td class="drBaseWord">
+                <div data-toggle="tooltip" data-placement="bottom" data-container="body" title="@dr.Definition">
+                    @dr.BaseWord
+                </div>
+            </td>
+            <td class="drRelationship hide">
+                @dr.Relationship
+
+            </td>
+            <td class="drGuess">
+                <input type="text" data-guess="@i" autocapitalize="off"
+                       autocorrect="off" />
+                <p class="drGuess"></p>
+                <p class="drAnswer">@dr.RelatedWord</p>
+            </td>
+            <td class="drStatus" id="@statusID">
+                <span class="drTrue glyphicon glyphicon-ok"></span>
+                <span class="drFalse glyphicon glyphicon-remove"></span>
+            </td>
+        </tr>
+
+    }
+
+</table>
+
+<p class="drillButtons">
+    <button id="checkTest" class="btn btn-default">Check my answers!</button>
+    <button class="btn btn-default" id="tryAgain" onClick="window.location.href=window.location.href">Try Again</button>
+</p>
+
+<p>
+    @Html.ActionLink("Other drills", "Index")
+</p>
+
+@section Scripts {
+
+
+    <script type="text/javascript">
+
+        function onDrillReady() {
+            $(checkTest).click(onCheckTestClick);
+            //$("table#drillTable input").focusin(onInputFocusin);
+            $("table#drillTable input[type=text]").focusout(onInputFocusout);
+
+            setTimeout(function () { $("input[data-guess=0]").focus(); }, 0);
+            $("[data-toggle=tooltip]").tooltip();
+
+            var isChecked = Cookies.get("chk_asYouGo");
+
+            if (isChecked) $("#chk_asYouGo").prop("checked", true);
+            $("#chk_asYouGo").click(onAsYouGoClick);
+
+        }
+
+        function onAsYouGoClick(e) {
+            var isChecked = $("#chk_asYouGo").prop("checked");
+            Cookies.set("chk_asYouGo", isChecked);
+            updateUIOnCheck(isChecked);
+        }
+
+        function onInputFocusout(e) {
+
+            var isChecked = $("#chk_asYouGo").prop("checked");
+
+            updateUIOnCheck(isChecked);
+
+            if (!isChecked) return;
+
+            var tr = $(e.currentTarget).closest("tr");
+            checkRow(0, tr);
+
+
+        }
+
+        function updateUIOnCheck(isChecked) {
+
+            if (!isChecked) {
+                $("button#checkTest").show();
+                $("#tryAgain").hide();
+            }
+            else {
+                $("button#checkTest").hide();
+                $("#tryAgain").show();
+            }
+
+            
+        }
+
+        function onCheckTestClick() {
+            $("table#drillTable").removeClass("table-striped");
+            $("table#drillTable tr").each(checkRow);
+            //$("input").prop('disabled', true);
+            $("#tryAgain").show();
+            $("#tryAgain").focus();
+            $("button#checkTest").hide();
+            $(".drDefinition").show();
+        }
+
+        //function onInputFocusin(e) {
+        //    console.log("onInputFocusin", e);
+        //    $(e.currentTarget).closest("tr").find(".drDefinition").show();
+        //}
+
+        //function onInputFocusout(e) {
+        //    console.log("onInputFocusout", e);
+        //    $(e.currentTarget).closest("tr").find(".drDefinition").hide();
+        //}
+
+        function checkRow(i, e) {
+            var answer = $(e).data("answer");
+            var guess = $(e).find("input").val().toLowerCase();
+
+            if (guess.trim() == "") return;
+
+            $(e).find("p.drGuess").text(guess);
+            var status = answer == guess;
+
+            $(e).addClass(status.toString());
+
+            console.log(i, guess, answer, status, e);
+        }
+        $(document).ready(onDrillReady);
+    </script>
+}
+

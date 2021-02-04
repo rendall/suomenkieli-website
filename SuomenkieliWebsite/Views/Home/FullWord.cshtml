@@ -1,0 +1,72 @@
+﻿@model List<SuomenkieliWebsite.Models.FullWord>
+
+@{
+    var firstWord = @Model[0];
+    ViewBag.Title = firstWord._Word;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div>
+    <h4>@Html.Raw(firstWord._Word)</h4>
+    @foreach (var fullWord in Model)
+    {
+
+
+        if (fullWord.Relationship != null)
+        {
+            <p>@Html.Raw(fullWord.Relationship._Relationship)</p>
+        }
+        <ol>
+            @for (int i = 0; i < fullWord.Definitions.Count; i++)
+            {
+                <li>@fullWord.Definitions[i]._Definition</li>
+            }
+        </ol>
+    }
+        <table>
+            @for (int i = 0; i < firstWord.Related.Count; i++)
+            {
+
+
+                <tr class="row">
+                    <td class="col-md-pull-2">@firstWord.Related[i].Word</td>
+                    <td class="col-md-2">@firstWord.Related[i].Relationship</td>
+                </tr>
+
+            }
+        </table>
+    
+    @*<dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model._Word)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model._Word)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BaseWordID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BaseWordID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LanguageID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LanguageID)
+        </dd>
+
+        </dl>*@
+</div>
+@*<p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>*@
+
+

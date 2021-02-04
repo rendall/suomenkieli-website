@@ -1,0 +1,147 @@
+﻿@model List<Suomenkieli.Relationship>
+@{
+    ViewBag.Title = "Self Tests";
+}
+
+<h2>@ViewBag.Title</h2>
+<p>Select self test</p>
+
+<div id="topicAccordion">
+
+</div>
+
+<script id="entry-template" type="text/x-handlebars-template">
+    {{#each this}}
+    <div class="entry">
+        <a href="./Drill/{{this}}">{{@@key}}</a>
+    </div>
+    {{/each}}
+</script>
+
+<script type="text/javascript">
+
+    var relObj = {
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            var relationship = Model[i];
+            string relName = relationship._Relationship;
+            int relID = relationship.ID;
+
+            <text>"@relName":@relID</text>
+
+            if (i != Model.Count - 1)
+            {
+                <text>,</text>
+                
+            }
+
+
+
+        }
+    }
+
+    
+
+    for (var relname in relObj) {
+        var divHTML = getDiv(relname);
+        var relID = relObj[relname];
+        var href = "/Drills/Drill/" + relID;
+
+        
+
+        $(divHTML).attr("href",href);
+        $(divHTML).addClass("end");
+        //$(divHTML).attr("data-relationship", relname);
+        
+     }
+    $("#topicAccordion div").click(toggleExpand);
+    $("#topicAccordion a.end").unbind("click");
+
+
+
+    //var source   = $("#entry-template").html();
+    //var template = Handlebars.compile(source);
+    //var html    = template(relObj);
+
+    ////////console.long(source,template,html);
+
+    //$("#topicAccordion").append(html);
+
+    function toggleExpand(e){
+        e.stopPropagation();
+
+
+
+        var div = e.currentTarget;
+
+
+
+        if ($(e.toElement).is("a")) return;
+
+        if ($(div).hasClass("expanded")){
+           $(div).removeClass("expanded");
+           $(div).find("div").removeClass("expanded");
+        }
+        else {
+            $(div).addClass("expanded");
+        }
+        console.log(e);
+    }
+
+    function clickLink(e){
+        e.stopPropagation();
+        //console.long($(e.currentTarget).data("href"));
+    }
+
+
+    function getDiv(relname, depth){
+
+        var names = relname.split(" ");
+        var div = $("#topicAccordion");
+        ////console.long ("-----", relname);
+
+        for (var i = 0; i < names.length; i++) {
+           
+            var name = names[i];
+           //    ////console.long(tabs + "looking for:", name);
+            var divs = $(div).children("div[data-topic=" + name + "]");
+            var findDiv = (divs.length > 0)? divs[0] : null;
+            ////console.long(divs);
+
+            if (findDiv==null){
+                if (i==names.length -1){
+                    findDiv = $("<a data-topic='" + name + "' class='depth-" + i + "'>" + name + "</a>");
+           
+                }
+                else findDiv = $("<div data-topic='" + name + "' class='depth-" + i + "'>" + name + "</div>");
+                findDiv.appendTo(div);
+                //                ////console.long(tabs + "not found created:", findDiv);
+            }
+
+            
+
+            div = findDiv;
+
+
+
+
+            //console.long("-------------", name);
+        }
+
+        ////console.long("---- return", div);
+        return div;
+        // first get firstword of relname
+        // if it is the last word then return link.
+
+        // otherwise if nameTally(depth) != firstWord
+        //  create new div with first word
+        //  otherwise get old div with same word
+        //  attach getDiv(restOfName, depth++)
+
+        // return div with attach.
+    }
+
+
+
+</script>
+

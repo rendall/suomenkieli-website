@@ -1,0 +1,2 @@
+﻿2017-03-28 20:53:22.8213|INFO|SearchLogger|search:  user: 
+2017-04-20 15:57:29.3218|INFO|SearchLogger|search: hei user: 

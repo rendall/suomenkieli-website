@@ -1,0 +1,166 @@
+﻿@model SuomenkieliWebsite.Models.VocabularyListVM
+
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div>
+    @if (!string.IsNullOrWhiteSpace(Model.Description))
+    {
+        <p>@Model.Description</p>
+    }
+    <hr />
+
+
+    @if (Model.WordList != null && Model.WordList.Count > 0)
+    {
+        <table id="wordList">
+            <tbody>
+                @for (int i = 0; i < Model.WordList.Count; i++)
+                {
+                    var fullWord = Model.WordList[i];
+                    var altClass = (i % 2 == 0) ? "alternating" : "";
+                    <tr data-id="@fullWord.ID"  data-word="@fullWord._Word" class="@altClass">
+                        <td>@fullWord._Word</td>
+                        <td>
+                            @if (fullWord.Definitions != null && fullWord.Definitions.Count > 0)
+                    {
+                                @fullWord.Definitions.FirstOrDefault()._Definition;
+                    }
+                        </td>
+                        <td data-id="@fullWord.ID" data-word="@fullWord._Word" class="removeWord"><span class="glyphicon glyphicon-remove"></span></td>
+                    </tr>
+                }
+            </tbody>
+
+
+
+
+        </table>
+
+    }
+    else
+    {
+        <p>This list does not yet contain words.</p>
+    }
+
+    <input autocapitalize="off" autocorrect="off" id="search" name="search" type="text" value="" />
+    <div id="wordOutput"></div>
+
+
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/wordSearch.js")
+    @Scripts.Render("~/Scripts/saveWord.js")
+
+    <script type="text/javascript">
+
+        //var listID = @Model.ID;
+
+        function onSearchReady() {
+            new WordInput("search", onExploreEnter);
+
+            new SaveWord().init();
+            SaveWord.instance.vocabularyListID = @Model.ID;
+            SaveWord.instance.onWordRemoveSuccess = onRemoveWordSuccess;
+            SaveWord.instance.onWordSaveSuccess = onSaveWordSuccess;
+
+            updateElements();
+        }
+
+        function updateElements(){
+
+            $( "table#wordList tbody" ).sortable({
+                axis: "y",
+                helper: fixHelper,
+                update: onSortUpdate
+            });
+            $( "table#wordList tbody" ).disableSelection();
+
+            $(".removeWord").click(onRemoveWordClick);
+
+            $("table#wordList tr").removeClass("alternating");
+            $("table#wordList tr:even").addClass("alternating");
+        }
+
+        function onRemoveWordSuccess(data, textStatus, jqXHR, context){
+
+            var rowRemoveSelector = "table#wordList tr[data-word="+data+"]";
+            $(rowRemoveSelector).remove();
+            console.log("onRemoveWordSuccess:", data, textStatus, jqXHR, context);
+
+            updateElements();
+        }
+
+        function onSaveWordSuccess(data, textStatus, jqXHR, context){
+
+            console.log("onSaveWordSuccess:", data, textStatus, jqXHR, context);
+
+            if (data == null) return;
+
+
+            var tRow = '<tr data-id="{2}" data-word="{0}"><td>{0}</td><td>{1}</td><td data-word="{0}" class="removeWord"><span class="glyphicon glyphicon-remove"></span></td></tr>';
+            tRow = tRow.split("{0}").join(data.word);
+            tRow = tRow.replace("{1}", data.definition);
+            tRow = tRow.replace("{2}", data.id);
+
+            var tr = $("table#wordList tbody").append(tRow);
+
+            updateElements();
+
+            $("#search").val("");
+        }
+
+        function onRemoveWordClick(e){
+            var wordToRemove = $(e.currentTarget).data("word");
+            SaveWord.instance.doRemoveWord(wordToRemove);
+            $(e.currentTarget).addClass("removing");
+        }
+
+        function onExploreEnter(e) {
+            console.log("onExploreEnter");
+            var wordToSave = $("#search").val();
+            SaveWord.instance.doSaveWord(wordToSave);
+        }
+
+        function fixHelper(e, ui) {
+            ui.children().each(function() {
+                $(this).width($(this).width());
+            });
+            return ui;
+        }
+
+        function onSortUpdate( event, ui ) {
+            console.log("update", event, ui);
+            updateElements();
+
+
+            var sortArr = [];
+            $("table#wordList tr").each(function(i){
+                //console.log("tr:", i, $(this).data("word"));
+                sortArr[i] = $(this).data("id");
+            });
+
+            var sortObj = {
+                list:@Model.ID,
+                order:sortArr
+            }
+
+            SaveWord.instance.doSaveSort(sortObj);
+
+
+
+        }
+
+        $(document).ready(onSearchReady);
+    </script>
+}

@@ -1,0 +1,42 @@
+﻿@model SuomenkieliWebsite.Models.Subtitles.SubtitlesFileUploadViewModel
+
+@{
+    ViewBag.Title = "Compare";
+}
+
+<h2>Upload</h2>
+
+@using (Html.BeginForm("Upload", "Subtitles", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+        @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Subtitles Upload</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.FinnishSubtitleFile, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.FinnishSubtitleFile, new { type = "file", accept=".srt", htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FinnishSubtitleFile, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EnglishSubtitleFile, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.EnglishSubtitleFile, new { type = "file", accept=".srt", htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.EnglishSubtitleFile, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Upload" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

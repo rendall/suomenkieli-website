@@ -1,0 +1,12 @@
+﻿@model List<string>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<ul>
+    @foreach (var link in Model)
+    {
+        <li>@Html.ActionLink(link, "Compare", "Subtitles", new { id = link }, null)</li>
+    }
+</ul>

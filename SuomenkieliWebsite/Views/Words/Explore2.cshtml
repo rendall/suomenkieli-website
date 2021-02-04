@@ -1,0 +1,502 @@
+﻿@model SuomenkieliWebsite.Models.ExploreVM
+
+
+@{
+    ViewBag.Title = "Explore";
+    var searchValue = "";
+    if (Model != null)
+    {
+        ViewBag.Title = Model.search;
+        searchValue = Model.search;
+    }
+
+}
+
+
+<h2>@ViewBag.Title</h2>
+
+<hr />
+
+@*@using (Html.BeginForm("Explore/", "Words", new { id = "" }))*@
+@using (Html.BeginForm("Explore"))
+{
+    @Html.AntiForgeryToken()
+
+
+    <div class="form-group">
+
+        <div class="input-group input-group-lg">
+            <span class="input-group-btn">
+                <span class="btn btn-secondary" id="btn_clearField"><i class="glyphicon glyphicon-remove"></i></span>
+            </span>
+
+            <input class="form-control" autocapitalize="off"
+                   autocorrect="off" id="search" name="search" type="text" value="@searchValue" />
+            <span class="input-group-btn">
+                <button class="btn btn-secondary" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+            </span>
+        </div>
+        <div id="wordOutput"></div>
+    </div>
+
+
+
+    <label for="isDefinitionSearch">
+        Search Definitions
+
+        <input id="isDefinitionSearch" name="isDefinitionSearch" type="checkbox" value="true" /><input name="isDefinitionSearch" type="hidden" value="false" />
+    </label>
+
+    <hr class="filterToggle" />
+
+    @*<i id="filterToggle" class="glyphicon glyphicon-filter" aria-hidden="true"></i>*@
+
+    <div id="filterGroup">
+
+        <div class="form-group">
+            <label for="&nbsp;">&nbsp;</label> <button type="button" class="close filterToggle" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="form-group">
+            <label for="verb">verb</label><input class="check-box" id="verb" name="verb" type="checkbox" value="true" /><input name="verb" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="noun">noun</label><input class="check-box" id="noun" name="noun" type="checkbox" value="true" /><input name="noun" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="adjective">adjective</label><input class="check-box" id="adjective" name="adjective" type="checkbox" value="true" /><input name="adjective" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="adverb">adverb</label><input class="check-box" id="adverb" name="adverb" type="checkbox" value="true" /><input name="adverb" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="pronoun">pronoun</label><input class="check-box" id="pronoun" name="pronoun" type="checkbox" value="true" /><input name="pronoun" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="number">number</label><input class="check-box" id="number" name="number" type="checkbox" value="true" /><input name="number" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="singular">singular</label><input class="check-box" id="singular" name="singular" type="checkbox" value="true" /><input name="singular" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="plural">plural</label><input class="check-box" id="plural" name="plural" type="checkbox" value="true" /><input name="plural" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="positive">positive</label><input class="check-box" id="positive" name="positive" type="checkbox" value="true" /><input name="positive" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="negative">negative</label><input class="check-box" id="negative" name="negative" type="checkbox" value="true" /><input name="negative" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="active">active</label><input class="check-box" id="active" name="active" type="checkbox" value="true" /><input name="active" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="passive">passive</label><input class="check-box" id="passive" name="passive" type="checkbox" value="true" /><input name="passive" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="nominative">nominative</label><input class="check-box" id="nominative" name="nominative" type="checkbox" value="true" /><input name="nominative" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="accusative">accusative</label><input class="check-box" id="accusative" name="accusative" type="checkbox" value="true" /><input name="accusative" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="genitive">genitive</label><input class="check-box" id="genitive" name="genitive" type="checkbox" value="true" /><input name="genitive" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="partitive">partitive</label><input class="check-box" id="partitive" name="partitive" type="checkbox" value="true" /><input name="partitive" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="inessive">inessive</label><input class="check-box" id="inessive" name="inessive" type="checkbox" value="true" /><input name="inessive" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="elative">elative</label><input class="check-box" id="elative" name="elative" type="checkbox" value="true" /><input name="elative" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="illative">illative</label><input class="check-box" id="illative" name="illative" type="checkbox" value="true" /><input name="illative" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="adessive">adessive</label><input class="check-box" id="adessive" name="adessive" type="checkbox" value="true" /><input name="adessive" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="ablative">ablative</label><input class="check-box" id="ablative" name="ablative" type="checkbox" value="true" /><input name="ablative" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="allative">allative</label><input class="check-box" id="allative" name="allative" type="checkbox" value="true" /><input name="allative" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="essive">essive</label><input class="check-box" id="essive" name="essive" type="checkbox" value="true" /><input name="essive" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="translative">translative</label><input class="check-box" id="translative" name="translative" type="checkbox" value="true" /><input name="translative" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="instructive">instructive</label><input class="check-box" id="instructive" name="instructive" type="checkbox" value="true" /><input name="instructive" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="abessive">abessive</label><input class="check-box" id="abessive" name="abessive" type="checkbox" value="true" /><input name="abessive" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="comitative">comitative</label><input class="check-box" id="comitative" name="comitative" type="checkbox" value="true" /><input name="comitative" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="comparative">comparative</label><input class="check-box" id="comparative" name="comparative" type="checkbox" value="true" /><input name="comparative" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="superlative">superlative</label><input class="check-box" id="superlative" name="superlative" type="checkbox" value="true" /><input name="superlative" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="present">present</label><input class="check-box" id="present" name="present" type="checkbox" value="true" /><input name="present" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="perfect">perfect</label><input class="check-box" id="perfect" name="perfect" type="checkbox" value="true" /><input name="perfect" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="past">past</label><input class="check-box" id="past" name="past" type="checkbox" value="true" /><input name="past" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="pluperfect">pluperfect</label><input class="check-box" id="pluperfect" name="pluperfect" type="checkbox" value="true" /><input name="pluperfect" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="indicative">indicative</label><input class="check-box" id="indicative" name="indicative" type="checkbox" value="true" /><input name="indicative" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="imperative">imperative</label><input class="check-box" id="imperative" name="imperative" type="checkbox" value="true" /><input name="imperative" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="conditional">conditional</label><input class="check-box" id="conditional" name="conditional" type="checkbox" value="true" /><input name="conditional" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="potential">potential</label><input class="check-box" id="potential" name="potential" type="checkbox" value="true" /><input name="potential" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="1st-person">1st-person</label><input class="check-box" id="person_1st" name="person_1st" type="checkbox" value="true" /><input name="person_1st" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="2nd-person">2nd-person</label><input class="check-box" id="person_2nd" name="person_2nd" type="checkbox" value="true" /><input name="person_2nd" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="3rd-person">3rd-person</label><input class="check-box" id="person_3rd" name="person_3rd" type="checkbox" value="true" /><input name="person_3rd" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="infinitive_1st">1st-infinitive</label><input class="check-box" id="infinitive_1st" name="infinitive_1st" type="checkbox" value="true" /><input name="infinitive_1st" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="infinitive_1st_long">1st-infinitive-long</label><input class="check-box" id="infinitive_1st_long" name="infinitive_1st_long" type="checkbox" value="true" /><input name="infinitive_1st_long" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="infinitive_2nd">2nd-infinitive</label><input class="check-box" id="infinitive_2nd" name="infinitive_2nd" type="checkbox" value="true" /><input name="infinitive_2nd" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="infinitive_3rd">3rd-infinitive</label><input class="check-box" id="infinitive_3rd" name="infinitive_3rd" type="checkbox" value="true" /><input name="infinitive_3rd" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="infinitive_4th">4th-infinitive</label><input class="check-box" id="infinitive_4th" name="infinitive_4th" type="checkbox" value="true" /><input name="infinitive_4th" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="infinitive_5th">5th-infinitive</label><input class="check-box" id="infinitive_5th" name="infinitive_5th" type="checkbox" value="true" /><input name="infinitive_5th" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="participle">participle</label><input class="check-box" id="participle" name="participle" type="checkbox" value="true" /><input name="participle" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="agent">agent</label><input class="check-box" id="agent" name="agent" type="checkbox" value="true" /><input name="agent" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="synonym">synonym</label><input class="check-box" id="synonym" name="synonym" type="checkbox" value="true" /><input name="synonym" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="antonym">antonym</label><input class="check-box" id="antonym" name="antonym" type="checkbox" value="true" /><input name="antonym" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="anagram">anagram</label><input class="check-box" id="anagram" name="anagram" type="checkbox" value="true" /><input name="anagram" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="compound">compound</label><input class="check-box" id="compound" name="compound" type="checkbox" value="true" /><input name="compound" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="related">related</label><input class="check-box" id="related" name="related" type="checkbox" value="true" /><input name="related" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="hypernym">hypernym</label><input class="check-box" id="hypernym" name="hypernym" type="checkbox" value="true" /><input name="hypernym" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="hyponym">hyponym</label><input class="check-box" id="hyponym" name="hyponym" type="checkbox" value="true" /><input name="hyponym" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="alternative">alternative</label><input class="check-box" id="alternative" name="alternative" type="checkbox" value="true" /><input name="alternative" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="coordinate">coordinate</label><input class="check-box" id="coordinate" name="coordinate" type="checkbox" value="true" /><input name="coordinate" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="see">see</label><input class="check-box" id="see" name="see" type="checkbox" value="true" /><input name="see" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="phrase">phrase</label><input class="check-box" id="phrase" name="phrase" type="checkbox" value="true" /><input name="phrase" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="conjunction">conjunction</label><input class="check-box" id="conjunction" name="conjunction" type="checkbox" value="true" /><input name="conjunction" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="interjection">interjection</label><input class="check-box" id="interjection" name="interjection" type="checkbox" value="true" /><input name="interjection" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="particle">particle</label><input class="check-box" id="particle" name="particle" type="checkbox" value="true" /><input name="particle" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="postposition">postposition</label><input class="check-box" id="postposition" name="postposition" type="checkbox" value="true" /><input name="postposition" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="prefix">prefix</label><input class="check-box" id="prefix" name="prefix" type="checkbox" value="true" /><input name="prefix" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="preposition">preposition</label><input class="check-box" id="preposition" name="preposition" type="checkbox" value="true" /><input name="preposition" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="abbreviation">abbreviation</label><input class="check-box" id="abbreviation" name="abbreviation" type="checkbox" value="true" /><input name="abbreviation" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="cardinal">cardinal</label><input class="check-box" id="cardinal" name="cardinal" type="checkbox" value="true" /><input name="cardinal" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="contraction">contraction</label><input class="check-box" id="contraction" name="contraction" type="checkbox" value="true" /><input name="contraction" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="numeral">numeral</label><input class="check-box" id="numeral" name="numeral" type="checkbox" value="true" /><input name="numeral" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="ordinal">ordinal</label><input class="check-box" id="ordinal" name="ordinal" type="checkbox" value="true" /><input name="ordinal" type="hidden" value="false" />
+        </div>
+
+        <div class="form-group">
+            <label for="suffix">suffix</label><input class="check-box" id="suffix" name="suffix" type="checkbox" value="true" /><input name="suffix" type="hidden" value="false" />
+        </div>
+    </div>
+
+
+
+
+}
+
+
+@if (Model != null)
+{
+    var resultList = Model.resultList;
+
+    if (resultList != null)
+    {
+        if (resultList.Count == 0)
+        {
+            <p>No results</p>
+        }
+        else
+        {
+            <table class="table-striped">
+                @for (int i = 0; i < resultList.Count; i++)
+                {
+                    var fullWord = resultList[i];
+                    var altClass = (i % 2 == 0) ? "alternating" : "";
+                    <tr>
+                        <td class="word">
+                            <a href="@fullWord._Word">@fullWord._Word</a>
+                        </td>
+                        <td>
+                            @if (fullWord.Definitions != null)
+                            {
+                                <ol class="definitionList">
+                                    @foreach (var def in fullWord.Definitions)
+                                    {
+                                        <li class="definitionListItem">@Html.Raw(def._Definition)</li>
+                                    }
+                                </ol>
+                            }
+                            @if (fullWord.Related != null)
+                            {
+                                <ul class="relatedList">
+                                    @foreach (var rel in fullWord.Related)
+                                    {
+                                        <li class="relatedListItem"><span data-id="@rel.ID">@rel.Relationship</span> <span>@Html.ActionLink(rel.Word, "Explore", new { id = rel.Word })</span></li>
+                                    }
+                                </ul>
+                            }
+
+                        </td>
+
+                        <td class="wordPlus">
+                            @if (Request.IsAuthenticated)
+                            {
+                                <div data-word="@fullWord._Word" class="saveButton btn"><i class="glyphicon large glyphicon-star-empty" aria-hidden="true"></i></div>
+                            }
+                            else
+                            {
+                                var retUrl = "/Words/Explore/?id=" + Url.Encode(searchValue);//Url.Action("Explore", new { id=Url.Encode(searchValue) });
+                                <a href="@Url.Action("Login", "Account", new { returnUrl = retUrl })" class="btn btn-xs">
+                                    <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
+                                </a>
+                            }
+                        </td>
+                    </tr>
+
+
+
+                }
+            </table>
+        }
+    }
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/wordSearch.js")
+    @Scripts.Render("~/Scripts/saveWord.js")
+
+    <script type="text/javascript">
+        function onSearchReady() {
+            console.log("onSearchReady");
+            new WordInput("search", onExploreEnter);
+
+            $("span#btn_clearField").click(onClearFieldPress);
+
+            @if (Request.IsAuthenticated) {
+            <text>
+            $(".filterToggle").click(onFilterToggle);
+            </text>
+            }
+            var sw = new SaveWord().init();
+            SaveWord.instance.onWordSaveComplete = onWordSaveComplete;
+            SaveWord.instance.onSaveErrorEvent = onSaveErrorEvent;
+            SaveWord.instance.onSaveSuccessEvent = onSaveSuccessEvent;
+            SaveWord.instance.onSaveClickEvent = onSaveClickEvent;
+        }
+
+        function onClearFieldPress(e) {
+            $("input#search").val("");
+        }
+
+
+        function onSaveClickEvent(e) {
+            console.log("onSaveClickEvent:", e);
+            $(e.currentTarget).addClass("active");
+        }
+
+        function onSaveErrorEvent(jqXHR, textStatus, errorThrown, context) {
+            console.log("onSaveErrorEvent:", jqXHR, textStatus, errorThrown, context);
+
+            if (jqXHR != null && jqXHR.responseText != null) textStatus = jqXHR.responseText;
+
+            var errorType = (textStatus.startsWith("Violation of UNIQUE KEY")) ? "warning" : "error";
+
+            console.log("startswith?", textStatus.startsWith("Violation of UNIQUE KEY"), textStatus);
+
+            $(context).addClass(errorType);
+        }
+
+        function onSaveSuccessEvent(data, textStatus, jqXHR, textStatus, context) {
+            console.log("onSaveSuccessEvent:", data, textStatus, jqXHR, textStatus, context);
+            $(context).addClass("success");
+        }
+
+        function onExploreEnter(e) {
+            console.log("onExploreEnter");
+        }
+
+        //$(context).children("i").first().removeClass("glyphicon-star-empty");
+        //$(context).children("i").first().addClass("glyphicon-star");
+
+        function onWordSaveComplete(jqXHR, textStatus, context) {
+
+            console.log("onWordSaveComplete", jqXHR, textStatus, context);
+            $(context).children("i").first().removeClass("glyphicon-star-empty");
+            $(context).children("i").first().addClass("glyphicon-star");
+            $(context).removeClass("active");
+        }
+
+        function onFilterToggle(e) {
+
+            console.log("OnFilterToggle", e);
+            var isFilter = $("#filterGroup").hasClass("on");
+
+            if (isFilter) {
+                $("#filterGroup").hide();
+                $("#filterGroup").removeClass("on");
+
+            }
+
+            else {
+                $("#filterGroup").show();
+                $("#filterGroup").addClass("on");
+            }
+        }
+
+        $(document).ready(onSearchReady);
+    </script>
+}

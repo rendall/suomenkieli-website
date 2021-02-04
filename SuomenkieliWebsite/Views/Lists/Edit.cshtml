@@ -1,0 +1,140 @@
+﻿@model SuomenkieliWebsite.Models.VocabularyListVM
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>VocabularyList</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ID)
+
+        @*<div class="form-group">
+            @Html.LabelFor(model => model.OwnerID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.OwnerID, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.OwnerID, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @if (Model.WordList != null && Model.WordList.Count > 0)
+        {
+            <table id="wordList">
+                @for (int i = 0; i < Model.WordList.Count; i++)
+                {
+                    var fullWord = Model.WordList[i];
+                    var altClass = (i % 2 == 0) ? "alternating" : "";
+                    <tr class="@altClass">
+                        <td>@fullWord._Word</td>
+                        <td>
+                            @if (fullWord.Definitions != null && fullWord.Definitions.Count > 0)
+                            {
+                                @fullWord.Definitions.FirstOrDefault()._Definition;
+                            }
+                        </td>
+                    </tr>
+                }
+
+
+
+
+            </table>
+
+        }
+        else
+        {
+            <p>This list does not yet contain words.</p>
+        }
+
+        <input autocapitalize="off" autocorrect="off" id="search" name="search" type="text" value="" />
+        <div id="wordOutput"></div>
+
+        @*<div class="form-group">
+            @Html.LabelFor(model => model.RandomURL, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.RandomURL, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RandomURL, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.UserURL, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.UserURL, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.UserURL, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Status, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/wordSearch.js")
+    @Scripts.Render("~/Scripts/saveWord.js")
+
+    <script type="text/javascript">
+        function onSearchReady() {
+            new WordInput("search", onExploreEnter);
+
+            new SaveWord().init();
+            SaveWord.instance.vocabularyListID = @Model.ID;
+
+
+            $( "table#wordList tr" ).sortable({
+                axis: "y"
+            });
+            $( "table#wordList tr" ).disableSelection();
+        }
+
+        function onExploreEnter(e) {
+            console.log("onExploreEnter");
+            var wordToSave = $("#search").val();
+            SaveWord.instance.doSaveWord(wordToSave);
+        }
+
+
+        $(document).ready(onSearchReady);
+    </script>
+}

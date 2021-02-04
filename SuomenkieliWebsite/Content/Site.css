@@ -1,0 +1,116 @@
+﻿body {
+    padding-top: 3em;
+    padding-bottom: 1em;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 15em;
+}
+
+html {
+    font-family: Arial, sans-serif;
+}
+
+div#filterGroup {
+    display: none;
+}
+
+table {
+    width: 100%;
+}
+
+    table#wordList td {
+        cursor: default;
+    }
+
+tr {
+    border: solid gray 1px;
+}
+
+    tr.alternating {
+        background: gainsboro;
+    }
+
+    tr.removing {
+        color: gray;
+        background-color: darkgray;
+    }
+
+ul {
+    padding: 0;
+}
+
+li {
+    list-style: none;
+    list-style-position: outside;
+}
+
+td, th {
+    padding: 0;
+    padding-left: 1em;
+    padding-right: 1em;
+    vertical-align: top;
+}
+
+    td.word {
+        border-right: solid black 1pt;
+    }
+
+    td.removeWord {
+        max-width: 2em;
+        padding: 0;
+        color: darkred;
+        cursor: pointer !important;
+    }
+
+        td.removeWord span {
+            font-size: 1em;
+        }
+
+/*.ui-autocomplete {
+    max-height: 11em;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}*/
+
+/*.glyphicon {
+    font-size: 2em;
+}*/
+
+/*.saveButton {
+    cursor: pointer;
+    padding: 0.25em;
+}
+
+.saveButton.success{
+    color:green;
+}
+.saveButton.saving{
+    color:gray;
+}
+.saveButton.error{
+    color:red;
+}*/
+
+
+/*.wordPlus {
+    padding-top: 0.25em;
+    padding-right: 0.25em;
+    text-align: right;
+}*/
